@@ -5,11 +5,16 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import net.chinahrd.utils.eMail.MailUtil;
 
 public class EMailTest {
 
+	@Autowired
+	private MailUtil mailUtil;
+	
+	
 	@Ignore
 	@Test
 	public void sendTest() {
@@ -53,7 +58,7 @@ public class EMailTest {
 		List<String> toList = rs;
 		String title = "测试邮件，不必理会。";
 		String content = telmplet();
-		MailUtil.send(toList, title, content);
+		mailUtil.send(toList, title, content);
 
 	}
 

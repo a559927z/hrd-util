@@ -3,6 +3,6 @@ Implementation-Title: hrd-util
 Implementation-Version: 1.0-RELEASE
 Built-By: Kingsing zhueng
 Implementation-Vendor-Id: net.chinahrd
-Build-Jdk: 1.8.0_31
+Build-Jdk: 1.8.0_144
 Created-By: Maven Integration for Eclipse
 

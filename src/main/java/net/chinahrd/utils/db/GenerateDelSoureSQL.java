@@ -4,7 +4,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.chinahrd.utils.FileOperation;
+import net.chinahrd.utils.FileUtil;
 
 /**
  * 清空源表数据
@@ -46,7 +46,7 @@ public class GenerateDelSoureSQL {
 				rsScriptSQL += "\r\n";
 			}
 			System.out.println(rsScriptSQL);
-			FileOperation.writeTxtFile(rsScriptSQL, new File(filePath));
+			FileUtil.writeTxtFile(rsScriptSQL, new File(filePath));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

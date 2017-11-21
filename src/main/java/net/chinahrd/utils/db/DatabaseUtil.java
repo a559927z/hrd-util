@@ -20,21 +20,29 @@ import org.slf4j.LoggerFactory;
 public class DatabaseUtil {
 
 	public static final Logger log = LoggerFactory.getLogger(DatabaseUtil.class);
-	
+
 	private Connection conn;
 	private Statement st;
 	private ResultSet rs;
 
-	private String driver="";
-	public DatabaseUtil(String url, String user, String password, String driverClassName) {
-		conn = DatabaseUtil.getConnectionJDBC(url, user, password, driverClassName);
-		driver=driverClassName;
+	private String driver = "";
+
+	public DatabaseUtil(JdbcDto dto) {
+		conn = DatabaseUtil.getConnectionJDBC(dto.getUrl(), dto.getUsername(), dto.getPassword(),
+				dto.getDriverClassName());
+		driver = driverClassName;
 	}
 
-	public String getDriver(){
-		return driver;
-		
+	public DatabaseUtil(String url, String user, String password, String driverClassName) {
+		conn = DatabaseUtil.getConnectionJDBC(url, user, password, driverClassName);
+		driver = driverClassName;
 	}
+
+	public String getDriver() {
+		return driver;
+
+	}
+
 	/**
 	 * 所有连接参数
 	 */
@@ -179,9 +187,9 @@ public class DatabaseUtil {
 	 * @return
 	 */
 	public ResultSet query(String sql) throws Exception {
+		System.out.println(sql);
 		st = conn.createStatement();
 		rs = st.executeQuery(sql);
-		System.out.println(sql);
 		return rs;
 	}
 
@@ -196,7 +204,7 @@ public class DatabaseUtil {
 	 * @throws SQLException
 	 */
 	public void saveOrUpdate(String sql) throws SQLException {
-//		log.debug(sql);
+		// log.debug(sql);
 		Statement st = null;
 		try {
 			st = conn.createStatement();
@@ -212,6 +220,25 @@ public class DatabaseUtil {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 删除
+	 * 
+	 * @param sql
+	 * @return
+	 */
+	public int delete(String sql) {
+		
+		int result = 0;
+		try {
+			st = conn.createStatement();
+			result = st.executeUpdate(sql);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+		}
+		return result;
 	}
 
 	public void main(String[] args) throws SQLException {

@@ -8,17 +8,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils.MillisProvider;
 import org.joda.time.Days;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.Period;
 import org.joda.time.Seconds;
-import org.joda.time.field.MillisDurationField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 
 /**
  * 时间工具类
@@ -37,9 +34,10 @@ public class DateUtil {
 		} catch (Exception e) {
 		}
 	}
-	 private static long deaultTimeLog = 1450403122691L; // 2015-12-18
+	private static long deaultTimeLog = 1450403122691L; // 2015-12-18
 	// 09:45:22
-//	private static long deaultTimeLog = 1464710400000L; // 2016-06-01 00:00:00
+	// private static long deaultTimeLog = 1464710400000L; // 2016-06-01
+	// 00:00:00
 	private static Timestamp timestamp = new Timestamp(deaultTimeLog);
 
 	/**
@@ -361,7 +359,6 @@ public class DateUtil {
 			return 0;
 		}
 	}
-	
 
 	/**
 	 * 计算时间相差多少 天，小时，分钟，秒 by jxzhang
@@ -595,6 +592,27 @@ public class DateUtil {
 	}
 
 	/**
+	 * 格式化日期
+	 * 
+	 * @param date
+	 *            日期 yyyyMMdd
+	 * @return String 日期字符串 yyyy-MM-dd
+	 */
+	public static String formatDate(Integer date) {
+		String dateStr = date.toString();
+		if (dateStr.length() != 8) {
+			return null;
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append(dateStr.substring(0, 4));
+		sb.append("-");
+		sb.append(dateStr.substring(4, 6));
+		sb.append("-");
+		sb.append(dateStr.substring(6, 8));
+		return sb.toString();
+	}
+
+	/**
 	 * 获取当年的第一天
 	 * 
 	 * @param year
@@ -649,6 +667,32 @@ public class DateUtil {
 		return currYearLast;
 	}
 
+	/**
+	 * 获取某月第一天日期
+	 * @param ym
+	 * @return
+	 */
+	public static String getMonthFirst(Date date) {
+		Calendar c = Calendar.getInstance();
+		c.clear();
+		c.setTime(date);
+		c.set(Calendar.DAY_OF_MONTH, 1);
+		return new SimpleDateFormat(FORMATE_DATE).format(c.getTime());
+	}
+	/**
+	 * 获取某月最后一天日期
+	 * @param ym
+	 * @return
+	 */
+	public static String getMonthLast(Date date) {
+		Calendar c = Calendar.getInstance();
+		c.clear();
+		c.setTime(date);
+		c.add(Calendar.MONTH, 1);
+		c.set(Calendar.DAY_OF_MONTH, 0);
+		return new SimpleDateFormat(FORMATE_DATE).format(c.getTime());
+	}
+	
 	/**
 	 * 时间戳转换为时间str（天,时:分:秒.毫秒）
 	 * 

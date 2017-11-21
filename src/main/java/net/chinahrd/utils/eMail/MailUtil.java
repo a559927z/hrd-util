@@ -11,8 +11,10 @@ import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 
 import com.sun.mail.util.MailSSLSocketFactory;
 
@@ -27,11 +29,21 @@ import net.chinahrd.utils.db.DatabaseUtil;
  * @Verdion 1.0 版本
  * 
  * @author jxzhang on 2017年04月16日
- * @Verdion 2.0 版本 
+ * @Verdion 2.0 版本
  */
+@Component
 public class MailUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(MailUtil.class);
+
+	@Value("${jdbc.url}")
+	private String url;
+	@Value("${jdbc.username}")
+	private String user;
+	@Value("${jdbc.password}")
+	private String pwd;
+	@Value("${jdbc.driver}")
+	private String driverClassName;
 
 	private static String host;
 	private static String prot;
@@ -45,17 +57,17 @@ public class MailUtil {
 	// private static String content;
 
 	/**
-	 * host,prot,from,account,password,默认从数据库获取
+	 * 组件JavaMail
+	 * 
+	 * @return
 	 */
-	static {
-		String url = "jdbc:mysql://42.62.24.7:3369/mup-zrw";
-		String user = "mup";
-		String pwd = "1a2s3d123";
-		String driverClassName = "com.mysql.jdbc.Driver";
+	private JavaMailSenderImpl wrapJavaMailSenderImpl() {
+		JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
 
 		DatabaseUtil db = new DatabaseUtil(url, user, pwd, driverClassName);
-		String sql = "SELECT min(t1.account) account, min(t1.pwd) password, min(t1. PORT) port, min(t1. HOST) host, min(t1.adminMail) adminMail FROM ( SELECT IF ( t.config_key = 'XTSZ-eMailAccount', t.config_val, NULL ) AS account, IF ( t.config_key = 'XTSZ-eMailPassword', t.config_val, NULL ) AS pwd, IF ( t.config_key = 'XTSZ-eMailPort', t.config_val, NULL ) AS PORT, IF ( t.config_key = 'XTSZ-eMailHost', t.config_val, NULL ) AS HOST, IF ( t.config_key = 'XTSZ-adminMail', t.config_val, NULL ) AS adminMail FROM `config` t WHERE t.config_key LIKE 'XTSZ-%' ) t1";
 		try {
+			String sql = "SELECT min(t1.account) account, min(t1.pwd) password, min(t1. PORT) port, min(t1. HOST) host, min(t1.adminMail) adminMail FROM ( SELECT IF ( t.config_key = 'XTSZ-eMailAccount', t.config_val, NULL ) AS account, IF ( t.config_key = 'XTSZ-eMailPassword', t.config_val, NULL ) AS pwd, IF ( t.config_key = 'XTSZ-eMailPort', t.config_val, NULL ) AS PORT, IF ( t.config_key = 'XTSZ-eMailHost', t.config_val, NULL ) AS HOST, IF ( t.config_key = 'XTSZ-adminMail', t.config_val, NULL ) AS adminMail FROM `config` t WHERE t.config_key LIKE 'XTSZ-%' ) t1";
+
 			db.query(sql);
 			ResultSet rs = db.query(sql);
 			while (rs.next()) {
@@ -65,16 +77,18 @@ public class MailUtil {
 				account = rs.getString("account");
 				password = CryptUtils.decryptString(rs.getString("password"));
 			}
-			log.info(host);
-			log.info(prot);
-			log.info(from);
-			log.info(account);
-			log.info(password);
+			// 设定mail server
+			senderImpl.setHost(host);
+			senderImpl.setPort(Integer.parseInt(prot));
+			senderImpl.setUsername(account);
+			senderImpl.setPassword(password);
 		} catch (Exception e) {
 			log.info(e.toString());
 		} finally {
 			db.close();
 		}
+
+		return senderImpl;
 	}
 
 	/**
@@ -87,7 +101,7 @@ public class MailUtil {
 	 * @param content
 	 *            内容
 	 */
-	public static void send(String to, String title, String content) {
+	public void send(String to, String title, String content) {
 		send(Arrays.asList(to), title, content);
 	}
 
@@ -101,9 +115,8 @@ public class MailUtil {
 	 * @param content
 	 *            内容
 	 */
-	public static void send(List<String> toList, String title, String content) {
-
-		JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
+	public void send(List<String> toList, String title, String content) {
+		JavaMailSenderImpl senderImpl = wrapJavaMailSenderImpl();
 		// 设定mail server
 		senderImpl.setHost(host);
 		senderImpl.setPort(Integer.parseInt(prot));
@@ -136,7 +149,7 @@ public class MailUtil {
 	 * @throws MessagingException
 	 * @throws GeneralSecurityException
 	 */
-	private static void send(JavaMailSenderImpl senderImpl, MimeMessage mailMessage, MimeMessageHelper messageHelper,
+	private void send(JavaMailSenderImpl senderImpl, MimeMessage mailMessage, MimeMessageHelper messageHelper,
 			String to, String title, String content) {
 
 		try {
@@ -164,10 +177,9 @@ public class MailUtil {
 	}
 
 	public static void main(String[] args) {
-		// List<String> toList = Arrays.asList("a559927z@163.com");
-		// String title = ".55 server sqlserver考勤机";
-		// String content = "444";
-		// MailUtil.send("a559927z@163.com", title, content);
-
+		MailUtil mailUtil = new MailUtil();
+		List<String> toList = Arrays.asList("jxzhang@chinahrd.net");
+		String title = "修改账号密码";
+		mailUtil.send(toList, title, "xxx");
 	}
 }
