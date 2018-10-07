@@ -1,5 +1,7 @@
 package net.chinahrd.utils.export;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.Validate;
 
 public class PrintArguments {
@@ -13,10 +15,7 @@ public class PrintArguments {
 	}
 
 	public enum PageDirection {
-		/** ˮƽ */
-		HORIZONTAL,
-		/** Թֱ */
-		VERTICAL
+		HORIZONTAL, VERTICAL
 	}
 
 	private String url;
@@ -32,6 +31,26 @@ public class PrintArguments {
 	private Double zoom;
 
 	private Integer timeout = 500;
+
+	private String phantomjsPath;
+
+	private HttpServletRequest request;
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	public String getPhantomjsPath() {
+		return phantomjsPath;
+	}
+
+	public void setPhantomjsPath(String phantomjsPath) {
+		this.phantomjsPath = phantomjsPath;
+	}
 
 	public String getUrl() {
 		return url;
@@ -102,9 +121,8 @@ public class PrintArguments {
 
 	@Override
 	public String toString() {
-		return "PrintArguments [url=" + url + ", filename=" + filename + ", pdfSize="
-				+ pdfSize + ", direction=" + direction + ", zoom=" + zoom + ", timeout="
-				+ timeout + "]";
+		return "PrintArguments [url=" + url + ", filename=" + filename + ", pdfSize=" + pdfSize + ", direction="
+				+ direction + ", zoom=" + zoom + ", timeout=" + timeout + "]";
 	}
 
 	public String toArgumentsString() {
