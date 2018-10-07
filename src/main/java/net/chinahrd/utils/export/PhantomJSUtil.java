@@ -18,6 +18,9 @@ import net.chinahrd.utils.WebUtils;
  */
 public class PhantomJSUtil {
 
+	
+	
+	
 	/**
 	 * 导出页面
 	 * 
@@ -53,4 +56,6 @@ public class PhantomJSUtil {
 		OutputStream os = response.getOutputStream();
 		os.write(bytes, 0, bytes.length);
 	}
+	
+	
 }

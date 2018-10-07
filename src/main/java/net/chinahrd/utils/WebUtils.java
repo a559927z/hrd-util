@@ -4,6 +4,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * web工具包
@@ -12,6 +14,19 @@ import org.springframework.web.context.ContextLoader;
  * @Verdion 1.0 版本
  */
 public class WebUtils {
+
+	/**
+	 * 获取当前请求对象
+	 * 
+	 * @return
+	 */
+	public static HttpServletRequest getRequest() {
+		try {
+			return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	/**
 	 * 获取项目全路径
@@ -81,5 +96,16 @@ public class WebUtils {
 	public static String getFileAbsolutePath(Class<?> clz) {
 		return clz.getProtectionDomain().getCodeSource().getLocation().getFile();
 	}
-	
+
+	/**
+	 * 本类，在服务器上绝对路径
+	 * 
+	 * @param clzz
+	 * @return D:\项目名称\target\classes\com\ks\Class\
+	 */
+	public static String getResource(Class<?> clzz) {
+		String reponsePath = "@@@" + clzz.getClass().getResource("").getPath();
+		return reponsePath = reponsePath.replace("@@@/", "");
+	}
+
 }

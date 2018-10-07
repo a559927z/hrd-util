@@ -169,6 +169,42 @@ public class CollectionKit {
 	}
 
 	/**
+	 * 判断集合对象中是否有指定属性值 by jxzhang on 2017-12-04
+	 * 
+	 * @param collection
+	 *            来源集合
+	 * @param propertyName
+	 *            指定属性
+	 * @param propertyValue
+	 *            指定值
+	 * @param separator
+	 * @return
+	 */
+	public static boolean containsToKey(final Collection collection, final String propertyName,
+			final Object propertyValue) {
+		try {
+			for (Object obj : collection) {
+				Object simpleProperty = PropertyUtils.getSimpleProperty(obj, propertyName);
+				if (simpleProperty != null) {
+					System.out.println(simpleProperty);
+					if (simpleProperty instanceof String) {
+						if (simpleProperty.equals(propertyValue)) {
+							return true;
+						}
+					} else {
+						if (simpleProperty == propertyValue) {
+							return true;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw Reflections.convertReflectionExceptionToUnchecked(e);
+		}
+		return false;
+	}
+
+	/**
 	 * 提取集合中的对象的一个属性(通过Getter函数), 组合成由分割符分隔的字符串.
 	 * 
 	 * @param collection
