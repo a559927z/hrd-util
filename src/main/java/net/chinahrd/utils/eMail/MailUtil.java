@@ -9,6 +9,7 @@ import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,9 @@ import net.chinahrd.utils.db.DatabaseUtil;
  * @Verdion 1.0 版本
  * @Verdion 2.0 版本
  */
+@Slf4j
 @Component
 public class MailUtil {
-
-    private static final Logger log = LoggerFactory.getLogger(MailUtil.class);
 
 //	@Value("${mail.url}")
 //	private String url;
